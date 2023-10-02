@@ -67416,6 +67416,7 @@ export const Learnsets: {[speciesid: string]: LearnsetData} = {
 			moonblast: ["8L36", "7L31", "6L31", "6S0"],
 			nastyplot: ["8M"],
 			odorsleuth: ["7L1", "6L8"],
+			pollute: ["8M"],
 			protect: ["8M", "7M", "6M"],
 			psychic: ["8M", "8L27", "7M", "7L48", "6M", "6L48"],
 			psychup: ["8L42", "7M", "7L64", "6M", "6L64"],

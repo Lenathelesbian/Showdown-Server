@@ -3368,51 +3368,52 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 			move.secondaries.push({
 				chance: 20,
 				pseudoWeather: 'trickroom',
-				ability: this.dex.abilities.get('mindcontrol'),
+				ability: this.dex.abilities.get('mindmeld'),
 			});
 			move.secondaries.push({
 				chance: 25,
 				pseudoWeather: 'gravity',
-				ability: this.dex.abilities.get('mindcontrol'),
+				ability: this.dex.abilities.get('mindmeld'),
 			});
 			move.secondaries.push({
 				chance: 35,
 				volatileStatus: 'healblock',
-				ability: this.dex.abilities.get('mindcontrol'),
+				ability: this.dex.abilities.get('mindmeld'),
 			});
-			for (const target of pokemon.adjacentFoes()){
-			if (this.randomChance(2,10)){
-				pokemon.addVolatile('imprison')
-			}
-		};
+			move.secondaries.push({
+				chance: 20,
+				volatileStatus: 'disable',
+				ability: this.dex.abilities.get('mindmeld'),
+			});
+			
 			move.secondaries.push({
 				chance: 35,
 				volatileStatus: 'miracleeye',
-				ability: this.dex.abilities.get('mindcontrol'),
+				ability: this.dex.abilities.get('mindmeld'),
 			});
 			move.secondaries.push({
 				chance: 30,
 				volatileStatus: 'telekinesis',
-				ability: this.dex.abilities.get('mindcontrol'),
+				ability: this.dex.abilities.get('mindmeld'),
 			});
 			move.secondaries.push({
 				chance: 25,
 				pseudoWeather: 'wonderroom',
-				ability: this.dex.abilities.get('mindcontrol'),
+				ability: this.dex.abilities.get('mindmeld'),
 			});
 			move.secondaries.push({
 				chance: 25,
 				pseudoWeather: 'magicroom',
-				ability: this.dex.abilities.get('mindcontrol'),
+				ability: this.dex.abilities.get('mindmeld'),
 			});
 			move.secondaries.push({
 				chance: 15,
 				terrain: 'psychicterrain',
-				ability: this.dex.abilities.get('mindcontrol'),
+				ability: this.dex.abilities.get('mindmeld'),
 			});
 		}
 		},
-		name: "Mind Control",
+		name: "Mind Meld",
 		rating: 2,
 		num: 310,
 
@@ -4359,6 +4360,33 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 		name: "Poison Touch",
 		rating: 2,
 		num: 143,
+	},
+	pollutedair: {
+		onSwitchIn(pokemon) {
+			const side = pokemon.isAlly(pokemon) ? pokemon.side.foe : pokemon.side;
+			const side2 = pokemon.isAlly(pokemon) ? pokemon.side : pokemon.side;
+			{
+				this.add('-activate', pokemon, 'ability: Polluted Air');
+				side.addSideCondition('pollutedair', pokemon);
+				side2.addSideCondition('pollutedair', pokemon);
+			}
+		},
+		onUpdate(pokemon) {
+			if (pokemon.status === 'psn' || pokemon.status === 'tox') {
+				this.add('-activate', pokemon, 'ability: Polluted Air');
+				pokemon.cureStatus();
+			}
+		},
+		onSetStatus(status, target, source, effect) {
+			if (status.id !== 'psn' && status.id !== 'tox') return;
+			if ((effect as Move)?.status) {
+				this.add('-immune', target, '[from] ability: Polluted Air');
+			}
+			return false;
+		},
+		name: "Polluted Air",
+		rating: 3.5,
+		num: 340,
 	},
 	pollution: {
 		// upokecenter says this is implemented as an added secondary effect

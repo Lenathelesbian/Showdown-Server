@@ -180,6 +180,44 @@ export const Conditions: {[k: string]: ConditionData} = {
 			}
 		},
 	},
+	pollutedair:{
+		name: 'pollutedair',
+		duration: 4,
+		durationCallback(target, source, effect) {
+			if (source?.hasAbility('persistent')) {
+				this.add('-activate', source, 'ability: Persistent', '[move] Pollute');
+				return 6;
+			}
+			return 4;
+		},
+		onSideStart(side, source) {
+			if (source?.hasAbility('persistent')) {
+				this.add('-sidestart', side, 'move: Pollute', '[persistent]');
+			} else {
+				this.add('-sidestart', side, 'Polluted Air');
+			}
+		},
+		onResidualOrder: 28,
+	onResidualSubOrder: 2,
+	onResidual(pokemon) {
+		if (pokemon.hasType ('Poison')) return;
+		if (pokemon.hasType ('Steel')) return;
+		
+		if (this.randomChance(2,10)){
+			pokemon.trySetStatus ('psn')
+			this.add('-activate', pokemon, 'pollutedair');
+		}
+		if (this.randomChance(2,10)){
+			pokemon.trySetStatus ('tox')
+			this.add('-activate', pokemon, 'pollutedair');
+		}
+	},
+		onSideResidualOrder: 26,
+		onSideResidualSubOrder: 5,
+		onSideEnd(side) {
+			this.add('-sideend', side, 'move: Pollute');
+		},
+	},
 	confusion: {
 		name: 'confusion',
 		// this is a volatile status
