@@ -1,0 +1,332 @@
+{
+    "charizard": {
+        "level": 100,
+        "sets": [
+            {
+                "role": "Char1",
+                "movepool": ["Dual Wingbeat", "flare Blitz", "Roost", "Thunder Punch"],
+                "teraTypes": ["Fire", "Ground"]
+            }
+        ]
+    },
+    "venusaur": {
+        "level": 100,
+        "sets": [
+            {
+                "role": "venu1",
+                "movepool": ["Giga Drain", "Sludge Bomb", "Synthesis", "Earth Power"],
+                "teraTypes": ["Grass", "Poison"]
+            }
+        ]
+        
+        
+    },
+    "Blastoise": {
+        "level": 100,
+        "sets": [
+            {
+                "role": "Blast1",
+                "movepool": ["Water Pulse", "Aura Sphere", "Shell Smash", "Ice Beam"],
+                "teraTypes": ["Water"]
+            }
+        ]
+    },
+    "Pidgeot": {
+        "level": 100,
+        "sets": [
+            {
+                "role": "Pidg1",
+                "movepool": ["Hurricane", "Heat Wave", "U-Turn", "Roost"],
+                "teraTypes": ["Flying"]
+            }
+        ]
+    },
+    "Butterfree": {
+        "level": 100,
+        "sets": [
+            {
+                "role": "Butte1",
+                "movepool": ["Quiver Dance", "Bug Buzz", "Giga Drain", "Hurricane"],
+                "teraTypes": ["Bug", "Flying"]
+            }
+        ]
+    },
+    "Beedrill": {
+        "level": 100,
+        "sets": [
+            {
+                "role": "Beedr1",
+                "movepool": ["Twineedle", "U-Turn", "Poison Jab", "Drill Run"],
+                "teraTypes": ["Bug", "Poison"]
+            }
+        ]
+    },
+    "Raticate": {
+        "level": 100,
+        "sets": [
+            {
+                "role": "Ratic1",
+                "movepool": ["Facade", "Swords Dance", "Crunch", "Stomping Tantrum"],
+                "teraTypes": ["Normal"]
+            }
+        ]
+    },
+    "Raticate-Alola": {
+        "level": 100,
+        "sets": [
+            {
+                "role": "Ratic1",
+                "movepool": ["Swords Dance", "Return", "Sucker Punch", "Stomping Tantrum"],
+                "teraTypes": ["Normal"]
+            }
+        ]
+    },
+    "Fearow": {
+        "level": 100,
+        "sets": [
+            {
+                "role": "Fearo1",
+                "movepool": ["Drill Peck", "U-Turn", "Return", "Drill Run"],
+                "teraTypes": ["Flying", "Normal"]
+            }
+        ]
+    },
+    "Arbok": {
+        "level": 100,
+        "sets": [
+            {
+                "role": "Arbok1",
+                "movepool": ["Poison Fang", "Coil", "Crunch", "Ice Fang"],
+                "teraTypes": ["Poison"]
+            }
+        ]
+
+    },
+    "Pikachu": {
+        "level": 100,
+        "sets": [
+            {
+                "role": "Pika1",
+                "movepool": ["Thunderbolt", "Surf", "Grass Knot", "Draining Kiss"],
+                "teraTypes": ["Fire", "Ground"]
+            }
+        ]
+    },
+    "Raichu": {
+        "level": 100
+    },
+    "Raichu-Alola": {
+        "level": 100
+    },
+    "Sandslash": {
+        "level": 100
+    },
+    "Sandslash-Alola": {
+        "level": 100
+    },
+    "Nidoqueen": {
+        "level": 100
+    },
+    "Nidoking": {
+        "level": 100
+    },
+    "Clefairy": {
+        "level": 100
+    },
+    "Clefable": {
+        "level": 100
+    },
+    "Jigglypuff": {
+        "level": 100
+    },
+    "Wigglytuff": {
+        "level": 100
+    },
+    "Ninetales": {
+        "level": 100
+    },
+    "Ninetales-Alola": {
+        "level": 100
+    },
+    "Golbat": {
+        "level": 100
+    },
+    "Vileplume": {
+        "level": 100
+    },
+    "Parasect": {
+        "level": 100
+    },
+    "Venomoth": {
+        "level": 100
+    },
+    "Dugtrio": {
+        "level": 100
+    },
+    "Dugtrio-Alola": {
+        "level": 100
+    },
+    "Persian": {
+        "level": 100
+    },
+    "Persian-Alola": {
+        "level": 100
+    },
+    "Golduck": {
+        "level": 100
+    },
+    "Arcanine": {
+        "level": 100
+    },
+    "Arcanine-Hisui": {
+        "level": 100
+    },
+    "Poliwrath": {
+        "level": 100
+    },
+    "Alakazam": {
+        "level": 100
+    },
+    "Machamp": {
+        "level": 100
+    },
+    "Victreebel": {
+        "level": 100
+    },
+    "Tentacruel": {
+        "level": 100
+    },
+    "Golem": {
+        "level": 100
+    },
+    "Golem-Alola": {
+        "level": 100
+    },
+    "Rapidash": {
+        "level": 100
+    },
+    "Rapidash-Galar": {
+        "level": 100
+    },
+    "Slowbro": {
+        "level": 100
+    },
+    "Slowbro-Galar": {
+        "level": 100
+    },
+    "Magneton": {
+        "level": 100
+    },
+    "Farfetch'd": {
+        "level": 100
+    },
+    "Dodrio": {
+        "level": 100
+    },
+    "Dewgong": {
+        "level": 100
+    },
+    "Muk": {
+        "level": 100
+    },
+    "Muk-Alola": {
+        "level": 100
+    },
+    "Cloyster": {
+        "level": 100
+    },
+    "Gengar": {
+        "level": 100
+    },
+    "Onix": {
+        "level": 100
+    },
+    "Hypno": {
+        "level": 100
+    },
+    "Kingler": {
+        "level": 100
+    },
+    "Electrode": {
+        "level": 100
+    },
+    "Electrode-Hisui": {
+        "level": 100
+    },
+    "Exeggutor": {
+        "level": 100
+    },
+    "Exegguto-Alola": {
+        "level": 100
+    },
+    "Marowak": {
+        "level": 100
+    },
+    "Marowak-Alola": {
+        "level": 100
+    },
+    "Hitmonlee": {
+        "level": 100
+    },
+    "Hitmonchan": {
+        "level": 100
+    },
+    "Lickitung": {
+        "level": 100
+    },
+    "Weezing": {
+        "level": 100
+    },
+    "Weezing-Galar": {
+        "level": 100
+    },
+    "Rhydon": {
+        "level": 100
+    },
+    "Chansey": {
+        "level": 100
+    },
+    "Tangela": {
+        "level": 100
+    },
+    "Kangaskhan": {
+        "level": 100
+    },
+    "Seadra": {
+        "level": 100
+    },
+    "Seaking": {
+        "level": 100
+    },
+    "Starmie": {
+        "level": 100
+    },
+    "Mr.Mime": {
+        "level": 100
+    },
+    "Scyther": {
+        "level": 100
+    },
+    "Jynx": {
+        "level": 100
+    },
+    "Electabuzz": {
+        "level": 100
+    },
+    "Magmar": {
+        "level": 100
+    },
+    "Pinsir": {
+        "level": 100
+    },
+    "Tauros": {
+        "level": 100
+    },
+    "Gyarados": {
+        "level": 100
+    },
+    "Lapras": {
+        "level": 100
+    }
+        
+}
