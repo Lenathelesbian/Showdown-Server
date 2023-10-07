@@ -180,6 +180,50 @@ export const Conditions: {[k: string]: ConditionData} = {
 			}
 		},
 	},
+	magicgems:{
+		name: 'magicgems',
+		duration: 6,
+		durationCallback(target, source, effect) {
+			if (source?.hasAbility('persistent')) {
+				this.add('-activate', source, 'ability: Persistent', '[move] Pollute');
+				return 7;
+			}
+			return 5;
+		},
+		onSideStart(side, source) {
+			if (source?.hasAbility('persistent')) {
+				this.add('-sidestart', side, 'Magic Gems', '[persistent]');
+			} else {
+				this.add('-sidestart', side, 'Magic Gems');
+			}
+		},
+		onResidualOrder: 28,
+	onResidualSubOrder: 2,
+	onResidual(pokemon) {
+		const side = pokemon.isAlly(pokemon) ? pokemon.side.foe : pokemon.side;
+		if (this.randomChance(2,10)){
+			side.addSideCondition('spikes')
+			this.add('-activate', pokemon, 'Magic Gems');
+		}
+		if (this.randomChance(1,10)){
+			side.addSideCondition('stealthrock')
+			this.add('-activate', pokemon, 'Magic Gems');
+		}
+		if (this.randomChance(1,10)){
+			side.addSideCondition('toxicspikes')
+			this.add('-activate', pokemon, 'Magic Gems');
+		}
+		if (this.randomChance(1,10)){
+			side.addSideCondition('gmaxsteelsurge')
+			this.add('-activate', pokemon, 'Magic Gems');
+		}
+	},
+		onSideResidualOrder: 26,
+		onSideResidualSubOrder: 5,
+		onSideEnd(side) {
+			this.add('-sideend', side, 'Magic Gems');
+		},
+	},
 	pollutedair:{
 		name: 'pollutedair',
 		duration: 4,

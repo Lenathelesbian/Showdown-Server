@@ -42,6 +42,16 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 		rating: 0.1,
 		num: 0,
 	},
+	acrobat: {
+		onModifyDamage(relayVar, source, target, move) {
+			if (move.name === 'Flying Press'){
+				this.chainModify(1.3)
+			}
+		},
+		name: "Acrobat",
+		rating: 3.5,
+		num: 317,
+	},
 	adaptability: {
 		onModifyMove(move) {
 			move.stab = 2;
@@ -111,6 +121,20 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 		name: "Air Lock",
 		rating: 1.5,
 		num: 76,
+	},
+	amplify: {
+		onBasePowerPriority: 30,
+		onBasePower(basePower, attacker, defender, move) {
+			const basePowerAfterMultiplier = this.modify(basePower, this.event.modifier);
+			this.debug('Base Power: ' + basePowerAfterMultiplier);
+			if (move.type = 'Electric', basePowerAfterMultiplier <= 70) {
+				this.debug('Amplify boost');
+				return this.chainModify(1.5);
+			}
+		},
+		name: "Amplify",
+		rating: 3.5,
+		num: 101,
 	},
 	analytic: {
 		onBasePowerPriority: 21,
@@ -1037,6 +1061,19 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 		rating: 0.5,
 		num: 303,
 	},
+	cursedroots:{
+		onSwitchIn(pokemon) {
+			pokemon.addVolatile('ingrain');
+		},
+		onDamagingHit(damage, target, source, move) {
+				if (this.randomChance(3, 10)) {
+					source.addVolatile('partiallytrapped');
+			}
+		},
+		name: "Cursed Roots",
+		rating: 3,
+		num: 335,
+	},
 	cursedvoice: {
 		onModifyMovePriority: -1,
 		onModifyMove(move) {
@@ -1191,11 +1228,14 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 			if (!move.secondaries) {
 				move.secondaries = [];
 			}
+			if (move.flags['sound']){
 			move.secondaries.push({
 				chance: 50,
 			    volatileStatus: 'confusion',
 				ability: this.dex.abilities.get('deafening'),
+			
 			});
+		}
 		},
 		name: "Deafening",
 		rating: 2,
@@ -1661,18 +1701,13 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 		num: 111,
 	},
 	firemaw: {
-		onModifyAtkPriority: 5,
-		onModifyAtk(atk, attacker, defender, move) {
-			if (move.type === 'Fire') {
+		onBasePowerPriority: 30,
+		onBasePower(basePower, attacker, defender, move) {
+			const basePowerAfterMultiplier = this.modify(basePower, this.event.modifier);
+			this.debug('Base Power: ' + basePowerAfterMultiplier);
+			if (move.type = 'Fire', basePowerAfterMultiplier <= 70) {
 				this.debug('Fire Maw boost');
-				return this.chainModify([5325, 4096]);
-			}
-		},
-		onModifySpAPriority: 5,
-		onModifySpA(atk, attacker, defender, move) {
-			if (move.type === 'Fire') {
-				this.debug('Fire Maw boost');
-				return this.chainModify([5325, 4096]);
+				return this.chainModify(1.5);
 			}
 		},
 		name: "Fire Maw",
@@ -3172,6 +3207,21 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 		rating: 3.5,
 		num: 317,
 	},
+	magicgems: {
+		onSwitchIn(pokemon) {
+			const side = pokemon.isAlly(pokemon) ? pokemon.side.foe : pokemon.side;
+			const side2 = pokemon.isAlly(pokemon) ? pokemon.side : pokemon.side;
+			{
+				this.add('-activate', pokemon, 'ability: Magic Gems');
+				side.addSideCondition('magicgems', pokemon);
+				side2.addSideCondition('magicgems', pokemon);
+			}
+		},
+		
+		name: "Magic Gems",
+		rating: 4.5,
+		num: 340,
+	},
 	magicguard: {
 		onDamage(damage, target, source, effect) {
 			if (effect.effectType !== 'Move') {
@@ -3353,7 +3403,7 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 		rating: 0,
 		num: 250,
 	},
-	mindcontrol: {
+	mindmeld: {
 		onModifyMove(move, pokemon) {
 			if (move.target === 'self') return;
 			if (move.type === 'Psychic'){
@@ -6041,7 +6091,7 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 				if (target.volatiles['substitute']) {
 					this.add('-immune', target);
 				} else {
-					this.boost({spe: -1}, target, pokemon, null, true);
+					this.boost({spe: -2}, target, pokemon, null, true);
 				}
 			}
 		},
@@ -6323,6 +6373,47 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 		name: "Suction Cups",
 		rating: 1,
 		num: 21,
+	},
+	sugarrush:{
+		onHit(source, target, move) {
+			const item = target.getItem();
+			if (source.hp && item.isBerry && target.takeItem(source)) {
+				this.add('-enditem', target, item.name, '[from] stealeat', 'Sugar Rush', '[of] ' + source);
+				if (this.singleEvent('Eat', item, null, source, null, null)) {
+					this.runEvent('EatItem', source, null, null, item);
+					if (item.id === 'leppaberry') target.staleness = 'external';
+				}
+				if (item.onEat) source.ateBerry = true;
+			}	
+			
+		},
+		onEatItem(item, pokemon) {
+			let stats: BoostID[] = [];
+			const boost: SparseBoostsTable = {};
+			let statPlus: BoostID;
+			for (statPlus in pokemon.boosts) {
+				if (statPlus === 'accuracy' || statPlus === 'evasion') continue;
+				if (pokemon.boosts[statPlus] < 6) {
+					stats.push(statPlus);
+				}
+			}
+			let randomStat: BoostID | undefined = stats.length ? this.sample(stats) : undefined;
+			if (randomStat) boost[randomStat] = 2;
+
+			stats = [];
+			let statMinus: BoostID;
+			for (statMinus in pokemon.boosts) {
+				if (statMinus === 'accuracy' || statMinus === 'evasion') continue;
+				if (pokemon.boosts[statMinus] > -6 && statMinus !== randomStat) {
+					stats.push(statMinus);
+				}
+			}
+			this.boost(boost, pokemon, pokemon);
+		},
+		
+		name: "Sugar Rush",
+		rating: 2,
+		num: 143,
 	},
 	superluck: {
 		onModifyCritRatio(critRatio) {
@@ -6664,6 +6755,27 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 		name: "Thick Fat",
 		rating: 3.5,
 		num: 47,
+	},
+	thievery: {
+		onAfterMoveSecondarySelf(source, target, move) {
+			if (target !== source && move?.flags['contact']) {
+				const yourItem = target.takeItem(source);
+				if (!yourItem) return;
+				if (!source.setItem(yourItem)) {
+					target.item = yourItem.id; // bypass setItem so we don't break choicelock or anything
+					return;
+				}
+				this.add('-item', source, yourItem, '[from] ability: Thievery', '[of] ' + target);
+			}
+		},
+		onBasePower(relayVar, source, target, move) {
+			if (target.item){
+				this.chainModify(1.5)
+			}
+		},
+		name: "Thievery",
+		rating: 1,
+		num: 124,
 	},
 	thorntrapper: {
 		onModifyMovePriority: -1,
@@ -7037,6 +7149,29 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 		name: "Unstoppable",
 		rating: 4,
 		num: 272,
+	},
+	upsidedown:{
+		onStart(pokemon) {
+			let activated = false;
+			for (const target of pokemon.adjacentFoes()) {
+				if (!activated) {
+					this.add('-ability', pokemon, 'Upside Down');
+					activated = true;
+				}
+				let success = false;
+			let i: BoostID;
+			for (i in target.boosts) {
+				if (target.boosts[i] === 0) continue;
+				target.boosts[i] = -target.boosts[i];
+				success = true;
+			}
+			if (!success) return false;
+			this.add('-invertboost', target, 'Upside Down');
+			}
+		},
+		name: "Upside Down",
+		rating: 3.5,
+		num: 284,
 	},
 	vesselofruin: {
 		onStart(pokemon) {
