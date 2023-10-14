@@ -158,6 +158,26 @@ export const Conditions: {[k: string]: ConditionData} = {
 			this.damage(this.clampIntRange(pokemon.baseMaxhp / 16, 1) * this.effectState.stage);
 		},
 	},
+	glo: {
+		name: 'glo',
+		effectType: 'Status',
+		onStart(target, source, sourceEffect) {
+			if (sourceEffect && sourceEffect.effectType === 'Ability') {
+				this.add('-status', target, 'glo', '[from] ability: ' + sourceEffect.name, '[of] ' + source);
+			} else {
+				this.add('-status', target, 'glo');
+			}
+		},
+		onResidualOrder: 9,
+		onResidual(pokemon) {
+			if (this.randomChance(5,10)){
+			this.damage(pokemon.baseMaxhp / 8);}
+			else if (this.randomChance(5,10)){
+				this.damage(pokemon.baseMaxhp / 16);}
+				else {
+					this.damage(pokemon.baseMaxhp / 4);}
+		},
+	},
 	frostbite: {
 		name: 'frostbite',
 		// this is a volatile status
@@ -262,6 +282,71 @@ export const Conditions: {[k: string]: ConditionData} = {
 			this.add('-sideend', side, 'move: Pollute');
 		},
 	},
+	oceanicveil:{
+		name: 'oceanicveil',
+		duration: 4,
+		durationCallback(target, source, effect) {
+			if (source?.hasAbility('persistent')) {
+				this.add('-activate', source, 'ability: Persistent', '[move] Pollute');
+				return 10;
+			}
+			return 7;
+		},
+		onSideStart(side, source) {
+			if (source?.hasAbility('persistent')) {
+				this.add('-sidestart', side, 'Oceanic Veil', '[persistent]');
+			} else {
+				this.add('-sidestart', side, 'Oceanic Veil');
+			}
+		},
+		onResidualOrder: 28,
+	onResidualSubOrder: 2,
+	onResidual(pokemon) {
+		if (pokemon.hasType ('Rock')) return;
+		if (pokemon.hasType ('Fire')) return;
+		if (pokemon.hasType ('Ground')) return;
+		
+		if (this.randomChance(4,10)){
+			this.heal(pokemon.baseMaxhp / 8);
+			this.add('-activate', pokemon, 'Oceanic Veil');
+		}
+		else if (this.randomChance(3,10)){
+			this.heal(pokemon.baseMaxhp / 6);
+			this.add('-activate', pokemon, 'Oceanic Veil');
+		}
+		else if (this.randomChance(2,10)){
+			this.heal(pokemon.baseMaxhp / 4);
+			this.add('-activate', pokemon, 'Oceanic Veil');
+		}
+	},
+		onSideResidualOrder: 26,
+		onSideResidualSubOrder: 5,
+		onSideEnd(side) {
+			this.add('-sideend', side, 'Oceanic Veil');
+		},
+	},
+	glowingspores:{
+		name: 'glowingspores',
+		onSideStart(side) {
+				this.add('-sidestart', side, 'Glowing Spores');
+			},
+			onEntryHazard(pokemon) {
+				if (pokemon.hasItem('heavydutyboots') || pokemon.hasAbility('flutteringbug')) return;
+				let stats: BoostID[] = [];
+			const boost: SparseBoostsTable = {};
+			let statPlus: BoostID;
+			for (statPlus in pokemon.boosts) {
+				if (statPlus === 'accuracy' || statPlus === 'evasion') continue;
+				if (pokemon.boosts[statPlus] < 6) {
+					stats.push(statPlus);
+				}
+			}
+			let randomStat: BoostID | undefined = stats.length ? this.sample(stats) : undefined;
+			if (randomStat) boost[randomStat] = -1;
+
+			this.boost(boost, pokemon, pokemon);
+			}
+		},
 	confusion: {
 		name: 'confusion',
 		// this is a volatile status

@@ -5843,8 +5843,8 @@ export const FormatsData: {[k: string]: SpeciesFormatsData} = {
 		natDexTier: "RUBL",
 	},
 	missingno: {
-		isNonstandard: "Custom",
-		tier: "Illegal",
+		tier: "OU",
+		natDexTier: "OU"
 	},
 	syclar: {
 		isNonstandard: "CAP",

@@ -1344,7 +1344,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			},
 			onSwitchIn(pokemon) {
 				if (
-					pokemon.hasItem('heavydutyboots') || pokemon.hasItem('coalengine')
+					pokemon.hasItem('heavydutyboots') || pokemon.hasItem('coalengine') || pokemon.hasAbility('flutteringbug')
 				) return;
 				const typeMod = this.clampIntRange(pokemon.runEffectiveness(this.dex.getActiveMove('stealthrock')), -6, 6);
 				this.damage(pokemon.maxhp * Math.pow(2, typeMod) / 8);
