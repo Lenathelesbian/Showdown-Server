@@ -14617,7 +14617,7 @@ export const Pokedex: {[speciesid: string]: SpeciesData} = {
 	zeraora: {
 		num: 807,
 		name: "Zeraora",
-		types: ["Electric"],
+		types: ["Electric", "Fighting"],
 		gender: "N",
 		baseStats: {hp: 88, atk: 112, def: 75, spa: 102, spd: 80, spe: 143},
 		abilities: {0: "Volt Absorb"},

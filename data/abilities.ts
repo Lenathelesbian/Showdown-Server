@@ -570,7 +570,7 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 				this.debug('Adding Bioluminescent');
 				if (!move.secondaries) move.secondaries = [];
 				for (const secondary of move.secondaries) {
-					if (secondary.status === 'glow') return;
+					if (secondary.status === 'glo') return;
 					if (secondary.sideCondition === 'glowingspores') return;
 				}
 				move.secondaries.push({
@@ -801,7 +801,7 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 	},
 	clearclouds: {
 		onSwitchIn(pokemon) {
-			this.add('-activate', pokemon, 'move: Heal Bell');
+			this.add('-activate', pokemon, 'Clear Clouds');
 			let success = false;
 			const allies = [...pokemon.side.pokemon, ...pokemon.side.allySide?.pokemon || []];
 			for (const ally of allies) {
@@ -3425,7 +3425,9 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 			const basePowerAfterMultiplier = this.modify(basePower, this.event.modifier);
 			this.debug('Base Power: ' + basePowerAfterMultiplier);
 			if (basePowerAfterMultiplier <= 40) {
-				this.debug('Technician boost');
+				if(move.multihit){this.debug('Technician boost');
+				return this.chainModify(1.5);}
+				else this.debug('Technician boost');
 				return this.chainModify(3.0);
 			}
 		},

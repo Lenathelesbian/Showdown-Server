@@ -1225,6 +1225,27 @@ export const Moves: {[moveid: string]: MoveData} = {
 		zMove: {effect: 'heal'},
 		contestType: "Cute",
 	},
+	berrybarrage: {
+		num: 362,
+		accuracy: 95,
+		basePower: 65,
+		category: "Special",
+		name: "Berry Barrage",
+		pp: 15,
+		priority: 0,
+		flags: {protect: 1, mirror: 1},
+		onAfterHit(target, source, move) {
+				if (source.hp && !source.item && this.dex.items.get(source.lastItem).isBerry) {
+					source.setItem(source.lastItem);
+					source.lastItem = '';
+					this.add('-item', source, source.getItem(), '[from] move: Berry Barrage');
+			}
+		},
+		secondary: null,
+		target: "normal",
+		type: "Grass",
+		contestType: "Tough",
+	},
 	bestow: {
 		num: 516,
 		accuracy: true,
@@ -4382,6 +4403,35 @@ export const Moves: {[moveid: string]: MoveData} = {
 		type: "Fighting",
 		contestType: "Cool",
 	},
+	earthclaw: {
+		num: 400,
+		accuracy: 100,
+		basePower: 80,
+		category: "Physical",
+		name: "Earth Claw",
+		pp: 15,
+		priority: 0,
+		flags: {contact: 1, protect: 1, mirror: 1, slicing: 1},
+		onAfterHit(target, source, move) {
+			if (!move.hasSheerForce && source.hp && this.randomChance(3,10)) {
+				for (const side of source.side.foeSidesWithConditions()) {
+					side.addSideCondition('spikes');
+				}
+			}
+		},
+		onAfterSubDamage(damage, target, source, move) {
+			if (!move.hasSheerForce && source.hp && this.randomChance(3,10)) {
+				for (const side of source.side.foeSidesWithConditions()) {
+					side.addSideCondition('spikes');
+				}
+			}
+		},
+		critRatio: 2,
+		secondary: null,
+		target: "normal",
+		type: "Ground",
+		contestType: "Tough",
+	},
 	earthpower: {
 		num: 414,
 		accuracy: 100,
@@ -4712,6 +4762,27 @@ export const Moves: {[moveid: string]: MoveData} = {
 		target: "normal",
 		type: "Fire",
 		contestType: "Cute",
+	},
+	enchantedwater: {
+		num: 560,
+		accuracy: 100,
+		basePower: 90,
+		category: "Special",
+		name: "Enchanted Water",
+		pp: 10,
+		flags: {protect: 1, mirror: 1},
+		onEffectiveness(typeMod, target, type, move) {
+			return typeMod + this.dex.getEffectiveness('Psychic', type);
+		},
+		priority: 0,
+		secondary:  {
+			chance: 30,
+			volatileStatus: 'confusion',
+		},
+		target: "any",
+		type: "Water",
+		zMove: {basePower: 160},
+		contestType: "Clever",
 	},
 	encore: {
 		num: 227,
@@ -6051,6 +6122,21 @@ export const Moves: {[moveid: string]: MoveData} = {
 		type: "Fighting",
 		contestType: "Tough",
 	},
+	foliagefang: {
+		num: 242,
+		accuracy: 100,
+		basePower: 70,
+		category: "Physical",
+		name: "Foliage Fang",
+		pp: 15,
+		priority: 0,
+		flags: {bite: 1, contact: 1, protect: 1, mirror: 1},
+		secondary: null,
+		critRatio: 2,
+		target: "normal",
+		type: "Grass",
+		contestType: "Tough",
+	},
 	followme: {
 		num: 266,
 		accuracy: true,
@@ -6277,6 +6363,35 @@ export const Moves: {[moveid: string]: MoveData} = {
 		target: "normal",
 		type: "Grass",
 		contestType: "Cool",
+	},
+	frostclaw: {
+		num: 400,
+		accuracy: 100,
+		basePower: 80,
+		category: "Physical",
+		name: "Frost Claw",
+		pp: 15,
+		priority: 0,
+		flags: {contact: 1, protect: 1, mirror: 1, slicing: 1},
+		onAfterHit(target, source, move) {
+			if (!move.hasSheerForce && source.hp && this.randomChance(3,10)) {
+				for (const side of source.side.foeSidesWithConditions()) {
+					side.addSideCondition('spikes');
+				}
+			}
+		},
+		onAfterSubDamage(damage, target, source, move) {
+			if (!move.hasSheerForce && source.hp && this.randomChance(3,10)) {
+				for (const side of source.side.foeSidesWithConditions()) {
+					side.addSideCondition('spikes');
+				}
+			}
+		},
+		critRatio: 2,
+		secondary: null,
+		target: "normal",
+		type: "Ice",
+		contestType: "Tough",
 	},
 	frostbreath: {
 		num: 524,
@@ -6625,6 +6740,26 @@ export const Moves: {[moveid: string]: MoveData} = {
 		target: "normal",
 		type: "Normal",
 		contestType: "Tough",
+	},
+	gigalick: {
+		num: 386,
+		accuracy: 85,
+		basePower: 130,
+		category: "Physical",
+		isNonstandard: "Past",
+		name: "Giga Lick",
+		pp: 5,
+		priority: 0,
+		flags: {contact: 1, protect: 1, mirror: 1},
+		secondary: {
+			chance: 40,
+			volatileStatus: 'flinch',
+		},
+		target: "normal",
+		type: "Normal",
+		zMove: {basePower: 180},
+		maxMove: {basePower: 130},
+		contestType: "Cool",
 	},
 	gigatonhammer: {
 		num: 893,
@@ -12351,6 +12486,28 @@ export const Moves: {[moveid: string]: MoveData} = {
 		type: "Fairy",
 		zMove: {boost: {spd: 1}},
 		contestType: "Beautiful",
+	},
+	moldmash: {
+		num: 506,
+		accuracy: 100,
+		basePower: 60,
+		basePowerCallback(pokemon, target, move) {
+			if (target.status || target.hasAbility('comatose')) {
+				this.debug('BP doubled from status condition');
+				return move.basePower * 2;
+			}
+			return move.basePower;
+		},
+		category: "Special",
+		name: "Mold Mash",
+		pp: 10,
+		priority: 0,
+		flags: {protect: 1, mirror: 1},
+		secondary: null,
+		target: "normal",
+		type: "Grass",
+		zMove: {basePower: 150},
+		contestType: "Clever",
 	},
 	moonblast: {
 		num: 585,
@@ -18244,6 +18401,32 @@ export const Moves: {[moveid: string]: MoveData} = {
 		},
 		target: "allAdjacentFoes",
 		type: "Fairy",
+	},
+	starfall: {
+		num: 395,
+		accuracy: 100,
+		basePower: 70,
+		category: "Special",
+		name: "Star Fall",
+		pp: 10,
+		priority: 0,
+		flags: {protect: 1, mirror: 1},
+		secondary: {},
+		onAfterHit(target, source, move) {
+			if (!move.hasSheerForce && source.hp && this.randomChance(5,10)) {
+				source.side.addSlotCondition (target, 'Wish');
+				this.add ('-activate', target, 'move: Star Fall');
+			}
+		},
+		onAfterSubDamage(damage, target, source, move) {
+			if (!move.hasSheerForce && source.hp && this.randomChance(5,10)) {
+				source.side.addSlotCondition (target, 'Wish');
+				this.add ('-activate', target, 'move: Star Fall');
+			}
+		},
+		target: "normal",
+		type: "Rock",
+		contestType: "Cool",
 	},
 	stealthrock: {
 		num: 446,
