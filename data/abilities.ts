@@ -3827,8 +3827,11 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 	},
 	multitasker: {
 		onModifyMove(move, pokemon, target) {
-			if (move.multihit){
-				move.multihit = [2, 7]
+			if (move.multihit && move.multiaccuracy){
+				move.multihit = [3, 5]
+			}
+			else if (move.multihit){
+				move.multihit = [3, 7]
 			}
 		},
 		name: "Multitasker",
@@ -6016,8 +6019,13 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 			delete pokemon.volatiles['slowstart'];
 			this.add('-end', pokemon, 'Slow Start', '[silent]');
 		},
+		onDragOutPriority: 1,
+		onDragOut(pokemon) {
+			this.add('-activate', pokemon, 'ability: Slow Start');
+			return null;
+		},
 		condition: {
-			duration: 5,
+			duration: 4,
 			onResidualOrder: 28,
 			onResidualSubOrder: 2,
 			onStart(target) {

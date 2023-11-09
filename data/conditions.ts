@@ -347,6 +347,86 @@ export const Conditions: {[k: string]: ConditionData} = {
 			this.boost(boost, pokemon, pokemon);
 			}
 		},
+
+    elementroom: {
+		name: 'elementroom',
+		duration: 5,
+			durationCallback(source, effect) {
+				if (source?.hasAbility('persistent')) {
+					this.add('-activate', source, 'ability: Persistent', '[move] Magic Room');
+					return 7;
+				}
+				return 5;
+			},
+			onFieldStart(target, source) {
+				if (source?.hasAbility('persistent')) {
+					this.add('-fieldstart', 'move: Element Room', '[of] ' + source, '[persistent]');
+				} else {
+					this.add('-fieldstart', 'move: Element Room', '[of] ' + source);
+				}
+			},
+			onFieldRestart(target, source) {
+				this.field.removePseudoWeather('elementroom');
+			},
+			// Item suppression implemented in Pokemon.ignoringItem() within sim/pokemon.js
+			onFieldResidualOrder: 27,
+			onFieldResidualSubOrder: 6,
+			onFieldEnd() {
+				this.add('-fieldend', 'move: Element Room', '[of] ' + this.effectState.source);
+			},
+			onResidualSubOrder: 2,
+	onResidual(pokemon) {
+		const types = this.dex.types.all();
+			let randomType = '';
+			if (types.length) {
+				randomType = this.sample(types).id;
+			}
+			const oldType = pokemon.setType(randomType);
+			if (oldType) {
+				this.add('-start', pokemon,'typechange', randomType, '[from] Element Room');
+				return;
+			}
+			return oldType as false | null;
+	},
+	},
+	bamboozle: {
+		name: 'bamboozle',
+		// this is a volatile status
+		onStart(target, source, sourceEffect) {
+				this.add('-start', target, 'bamboozle');
+				const min = sourceEffect?.id === 'axekick' ? 1 : 2;;
+				this.effectState.time = this.random(min, 2);
+		},
+		onEnd(target) {
+			this.add('-end', target, 'bamboozle');
+		},
+		onTryMove(pokemon) {
+			pokemon.volatiles['bamboozle'].time--;
+			if (!pokemon.volatiles['bamboozle'].time) {
+				pokemon.removeVolatile('bamboozle');
+				return;
+			}
+			this.add('-activate', pokemon, 'bamboozle');
+			this.activeTarget = pokemon;
+				const moves = [];
+				for (const moveSlot of pokemon.moveSlots) {
+					const moveid = moveSlot.id;
+					if (!moveid) continue;
+					const move = this.dex.moves.get(moveid);
+					if (move.flags['nosleeptalk'] || move.flags['charge'] || (move.isZ && move.basePower !== 1) || move.isMax) {
+						continue;
+					}
+					moves.push(moveid);
+				}
+				let randomMove = '';
+				if (moves.length) randomMove = this.sample(moves);
+				if (!randomMove) {
+					return false;
+				}
+				this.actions.useMove(randomMove, pokemon);
+				return false;
+		},
+	},
 	confusion: {
 		name: 'confusion',
 		// this is a volatile status
