@@ -200,6 +200,26 @@ export const Conditions: {[k: string]: ConditionData} = {
 			}
 		},
 	},
+	echopulse: {
+		name: 'echopulse',
+			noCopy: true,
+			onStart(pokemon) {
+				this.add('-start', pokemon, 'Echo Pulse', '[silent]');
+			},
+			onAccuracy() {
+				return true;
+			},
+			onBasePower(relayVar, source, target, move) {
+				this.chainModify(1.5)},
+			onAfterMove(pokemon, target, move) {
+				if (move.id !== 'echopulse') {
+					pokemon.removeVolatile('echopulse');
+				}
+			},
+			onEnd(pokemon) {
+				this.add('-end', pokemon, 'Echo Pulse', '[silent]');
+			},
+	},
 	magicgems:{
 		name: 'magicgems',
 		duration: 6,

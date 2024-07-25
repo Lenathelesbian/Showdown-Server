@@ -181,7 +181,8 @@ export const FormatsData: {[k: string]: SpeciesFormatsData} = {
 	},
 	pichuspikyeared: {
 		isNonstandard: "Past",
-		tier: "Illegal",
+		tier: "RU",
+		natDexTier: "RU",
 	},
 	pikachu: {
 		tier: "NFE",
@@ -189,26 +190,32 @@ export const FormatsData: {[k: string]: SpeciesFormatsData} = {
 	pikachucosplay: {
 		isNonstandard: "Past",
 		tier: "Illegal",
+		natDexTier: "RU",
 	},
 	pikachurockstar: {
 		isNonstandard: "Past",
 		tier: "Illegal",
+		natDexTier: "RU",
 	},
 	pikachubelle: {
 		isNonstandard: "Past",
 		tier: "Illegal",
+		natDexTier: "RU",
 	},
 	pikachupopstar: {
 		isNonstandard: "Past",
 		tier: "Illegal",
+		natDexTier: "RU",
 	},
 	pikachuphd: {
 		isNonstandard: "Past",
 		tier: "Illegal",
+		natDexTier: "RU",
 	},
 	pikachulibre: {
 		isNonstandard: "Past",
 		tier: "Illegal",
+		natDexTier: "RU",
 	},
 	pikachuoriginal: {
 		tier: "(PU)",

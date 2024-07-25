@@ -1,5 +1,6 @@
 // List of flags and their descriptions can be found in sim/dex-moves.ts
 
+import { Battle } from "../sim";
 import { Abilities } from "./abilities";
 
 export const Moves: {[moveid: string]: MoveData} = {
@@ -568,6 +569,21 @@ export const Moves: {[moveid: string]: MoveData} = {
 		type: "Fighting",
 		contestType: "Tough",
 	},
+	armwrestle: {
+		num: 473,
+		accuracy: 100,
+		basePower: 90,
+		category: "Physical",
+		overrideDefensiveStat: 'atk',
+		name: "Arm Wrestle",
+		pp: 10,
+		priority: 0,
+		flags: {protect: 1, mirror: 1, contact: 1},
+		secondary: null,
+		target: "normal",
+		type: "Fighting",
+		contestType: "Tough",
+	},
 	aromatherapy: {
 		num: 312,
 		accuracy: true,
@@ -1109,6 +1125,7 @@ export const Moves: {[moveid: string]: MoveData} = {
 		selfdestruct: "always",
 		secondary: {},
 		onHit(target, source, move) {
+			if (!target.hasType('Poison'))
 				for (const side of source.side.foeSidesWithConditions()) {
 					side.addSideCondition('spikes');
 					side.addSideCondition('spikes');
@@ -2821,6 +2838,45 @@ export const Moves: {[moveid: string]: MoveData} = {
 		target: "adjacentAlly",
 		type: "Fighting",
 	},
+	coiffeurtwist: {
+		num: 14,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Coiffeur Twist",
+		pp: 20,
+		priority: 0,
+		flags: {snatch: 1},
+		boosts: {
+			atk: 1,
+			spe: 1,
+		},
+		secondary: null,
+		onHit(pokemon) {
+			if (pokemon.name === 'Furfrou'){
+			const possibleFormes = ["Furfrou",
+			"Furfrou-Heart",
+			"Furfrou-Star",
+			"Furfrou-Diamond",
+			"Furfrou-Debutante",
+			"Furfrou-Matron",
+			"Furfrou-Dandy",
+			"Furfrou-La Reine",
+			"Furfrou-Kabuki",
+			"Furfrou-Pharaoh",];
+			const randomForme = this.sample(possibleFormes.filter(forme => forme !== pokemon.species.forme));
+			
+			// Change Furfrou's forme
+			this.add('-formechange', pokemon, randomForme);
+			pokemon.formeChange(randomForme);
+			this.add('-message', `${pokemon.name} got its fur trimmed!`);
+		}
+		},
+		target: "self",
+		type: "Normal",
+		zMove: {effect: 'heal'},
+		contestType: "Beautiful",
+	},
 	coil: {
 		num: 489,
 		accuracy: true,
@@ -3831,6 +3887,34 @@ export const Moves: {[moveid: string]: MoveData} = {
 		zMove: {boost: {accuracy: 1}},
 		contestType: "Cool",
 	},
+	desolatedive: {
+        num: 1000, // A unique number for the custom move
+        accuracy: 80,
+        basePower: 120,
+        category: "Physical",
+        desc: "Has a 30% chance to make the target flinch. If this move knocks out a target, the user regains 33% of its max HP. The user must recharge on the following turn.",
+        shortDesc: "30% flinch chance. Heals 33% HP if KO. User recharges.",
+        name: "Desolate Dive",
+        pp: 5,
+        priority: 0,
+        flags: {contact: 1, recharge: 1, protect: 1, mirror: 1},
+		self: {
+			volatileStatus: 'mustrecharge',
+		},
+        secondary: {
+            chance: 30,
+            volatileStatus: 'flinch',
+        },
+			onAfterMoveSecondarySelf(pokemon, target, move) {
+				if (!target || target.fainted || target.hp <= 0) {
+					this.heal(pokemon.maxhp / 3, pokemon);
+				}
+			
+		},
+        target: "normal",
+        type: "Dark",
+        contestType: "Cool",
+    },
 	destinybond: {
 		num: 194,
 		accuracy: true,
@@ -4823,6 +4907,23 @@ export const Moves: {[moveid: string]: MoveData} = {
 		type: "Normal",
 		contestType: "Beautiful",
 	},
+	echopulse: {
+		num: 304,
+		accuracy: 100,
+		basePower: 80,
+		category: "Special",
+		name: "Echo Pulse",
+		pp: 15,
+		priority: 0,
+		flags: {protect: 1, mirror: 1, sound: 1, bypasssub: 1, pulse: 1},
+		secondary: null,
+		self: {
+			volatileStatus: 'echopulse',
+		},
+		target: "allAdjacentFoes",
+		type: "Normal",
+		contestType: "Beautiful",
+	},
 	eerieimpulse: {
 		num: 598,
 		accuracy: 100,
@@ -4880,6 +4981,30 @@ export const Moves: {[moveid: string]: MoveData} = {
 		target: "normal",
 		type: "Normal",
 		contestType: "Cute",
+	},
+	elderswrath: {
+		num: 386,
+		accuracy: 100,
+		basePower: 0,
+		basePowerCallback(pokemon, target) {
+			const turncount = this.turn;
+			let power = 20 + 5 * turncount;
+			if (power > 250) power = 250;
+			this.debug('BP: ' + power);
+			return power;
+		},
+		category: "Special",
+		isNonstandard: "Past",
+		name: "Elders Wrath",
+		pp: 10,
+		priority: 0,
+		flags: {protect: 1, mirror: 1},
+		secondary: null,
+		target: "normal",
+		type: "Normal",
+		zMove: {basePower: 160},
+		maxMove: {basePower: 130},
+		contestType: "Tough",
 	},
 	electricterrain: {
 		num: 604,
@@ -5357,6 +5482,28 @@ export const Moves: {[moveid: string]: MoveData} = {
 		},
 		target: "normal",
 		type: "Psychic",
+	},
+	eternalwinter: {
+		num: 59,
+		accuracy: 85,
+		basePower: 110,
+		category: "Special",
+		name: "Eternal Winter",
+		pp: 5,
+		priority: 0,
+		flags: {protect: 1, mirror: 1, wind: 1},
+		onTry(source) {
+			if (this.field.isWeather(['sunnyday', 'raindance', 'desolateland', 'primordialsea', 'sandstorm'])) {
+				this.hint("Its too warm to use the move.");
+				return false;
+			}
+		},
+		onModifyMove(move) {
+			if (this.field.isWeather(['hail', 'snow'])) move.basePower *= 1.5;
+		},
+		target: "normal",
+		type: "Ice",
+		contestType: "Beautiful",
 	},
 	eternabeam: {
 		num: 795,
@@ -6334,6 +6481,66 @@ export const Moves: {[moveid: string]: MoveData} = {
 		secondary: null,
 		target: "normal",
 		type: "Grass",
+	},
+	glamourblitz: {
+		num: 29,
+		accuracy: 120,
+		basePower: 100,
+		category: "Physical",
+		name: "Glamour Blitz",
+		pp: 15,
+		priority: 0,
+		flags: {contact: 1, protect: 1, mirror: 1},
+		secondary: {},
+		onModifyMove(move, pokemon, target) {
+			if (pokemon.species.name === 'Furfrou-Dandy'){
+				move.basePower = 110;
+				move.ignoreImmunity = true;
+				move.infiltrates = true ;
+			}
+			if (pokemon.species.name === 'Furfrou-Debutante'){
+				move.basePower = 100;
+			}
+			if (pokemon.species.name === 'Furfrou-Diamond'){
+				move.basePower = 90;
+			}
+			if (pokemon.species.name === 'Furfrou-Heart'){
+				move.basePower = 60;
+				move.drain = [1,1];
+			}
+			if (pokemon.species.name === 'Furfrou-Kabuki'){
+				move.basePower = 110;
+				move.overrideDefensiveStat = 'spd';
+			}
+			if (pokemon.species.name === 'Furfrou-La Reine'){
+				move.basePower = 140;
+				move.accuracy = 80;
+			}
+			if (pokemon.species.name === 'Furfrou-Matron'){
+				move.basePower = 130;
+				move.type = 'Fairy';
+			}
+			if (pokemon.species.name === 'Furfrou-Pharaoh'){
+				move.basePower = 150;
+				move.recoil = [66, 100];
+			}
+			if (pokemon.species.name === 'Furfrou-Star'){
+				move.basePower = 80;
+				move.willCrit = true;
+			}
+		},
+		onModifyPriority(priority, source, pokemon, move) {
+			if (source.species.name === 'Furfrou-Diamond') {
+				return priority + 1;}
+		},
+		onAfterMove(source, target, pokemon) {
+			if (pokemon.name === 'Furfrou-Debutante'){
+				this.boost({'def': -1}, target);
+			}
+		},
+		target: "normal",
+		type: "Normal",
+		contestType: "Beautiful",
 	},
 	fly: {
 		num: 19,
@@ -8774,6 +8981,47 @@ export const Moves: {[moveid: string]: MoveData} = {
 		type: "Normal",
 		zMove: {boost: {def: 1}},
 		contestType: "Tough",
+	},
+	hazardousuplift: {
+		num: 96,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Hazardous Uplift",
+		pp: 10,
+		priority: 0,
+		flags: {snatch: 1},
+		onTryMove(pokemon, target, move) {
+			// Check if there are hazards on the user's side of the field
+			const hazards = ['spikes', 'toxicspikes', 'stealthrock', 'stickyweb', 'gmaxsteelsurge', 'glowingspores'];
+			const activeHazards = hazards.filter(hazard => pokemon.side.getSideCondition(hazard));
+	
+			// If there are hazards, boost a random stat for each different hazard
+			if (activeHazards.length > 0) {
+				const stats = ['atk', 'def', 'spa', 'spd', 'spe'];
+				for (const hazard of activeHazards) {
+					const randomStat = this.sample(stats);
+					if (this.randomChance(5,10)){
+					this.boost({[randomStat]: 1}, pokemon);}
+				}
+			}
+		},
+		onAfterMove(target, pokemon, move) {
+			if (!move.hasSheerForce) {
+				const sideConditions = ['spikes', 'toxicspikes', 'stealthrock', 'stickyweb', 'gmaxsteelsurge', 'glowingspores'];
+				for (const condition of sideConditions) {
+					if (pokemon.hp && pokemon.side.removeSideCondition(condition)) {
+						this.add('-sideend', pokemon.side, this.dex.conditions.get(condition).name, '[from] move: Hazardous Uplift', '[of] ' + pokemon);
+					}
+				}
+			}
+		},
+		secondary: null,
+		target: "self",
+		type: "Ground",
+		zMove: {boost: {atk: 1}},
+		contestType: "Cool",
 	},
 	haze: {
 		num: 114,
@@ -11334,7 +11582,7 @@ export const Moves: {[moveid: string]: MoveData} = {
 		name: "Lunar Gaze",
 		pp: 30,
 		priority: 0,
-		flags: {},
+		flags: {snatch: 1},
 		onHit(target, defender) {
 			const stats: BoostID[] = [];
 			let stat: BoostID;
@@ -12269,6 +12517,35 @@ export const Moves: {[moveid: string]: MoveData} = {
 		zMove: {boost: {spd: 1}},
 		contestType: "Beautiful",
 	},
+	mechagatling: {
+		num: 63,
+		accuracy: 100,
+		basePower: 70,
+		category: "Special",
+		name: "Mecha Gatling",
+		pp: 5,
+		multihit: 3,
+		priority: 0,
+		flags: {bullet: 1, recharge: 1, protect: 1, mirror: 1},
+		onTryMove(attacker, defender, move) {
+			if (attacker.removeVolatile(move.id)) {
+				return;
+			}
+			this.add('-prepare', attacker, move.name);
+			if (!this.runEvent('ChargeMove', attacker, defender, move)) {
+				return;
+			}
+			attacker.addVolatile('twoturnmove', defender);
+			return null;
+		},
+		self: {
+			volatileStatus: 'mustrecharge',
+		},
+		secondary: null,
+		target: "normal",
+		type: "Steel",
+		contestType: "Cool",
+	},
 	meditate: {
 		num: 96,
 		accuracy: true,
@@ -12298,7 +12575,7 @@ export const Moves: {[moveid: string]: MoveData} = {
 		pp: 20,
 		priority: 0,
 		flags: {
-			protect: 1, bypasssub: 1,
+			copy: 1,protect: 1, bypasssub: 1,
 			failencore: 1, failmefirst: 1, nosleeptalk: 1, noassist: 1, failcopycat: 1, failinstruct: 1, failmimic: 1,
 		},
 		onTryHit(target, pokemon) {
@@ -12667,6 +12944,36 @@ export const Moves: {[moveid: string]: MoveData} = {
 		type: "Fire",
 		contestType: "Cool",
 	},
+	mindpurge: {
+		num: 429,
+		accuracy: 100,
+		basePower: 80,
+		category: "Special",
+		name: "Mind Purge",
+		pp: 10,
+		priority: 0,
+		flags: {protect: 1, mirror: 1},
+		onModifyMove(move, pokemon) {
+			// Check if the user has a positive stat boost
+			if (pokemon.boosts['atk'] > 0 || pokemon.boosts['def'] > 0 || pokemon.boosts['spa'] > 0 || pokemon.boosts['spd'] > 0 || pokemon.boosts['spe'] > 0 || pokemon.boosts['accuracy'] > 0 || pokemon.boosts['evasion'] > 0) {
+				move.basePower *= 1.5; // Increase damage if the user has a positive stat boost
+			}
+		},
+		onAfterMove(pokemon, source) {
+			// Remove a random positive stat buff from the user
+			const statBoosts = Object.keys(pokemon.boosts) as (keyof BoostsTable)[];
+			const positiveBoosts = statBoosts.filter(stat => pokemon.boosts[stat] && pokemon.boosts[stat] > 0);
+	
+			if (positiveBoosts.length > 0) {
+				const randomBoost = this.sample(positiveBoosts);
+				this.boost({[randomBoost]: -1}, pokemon, pokemon, null, true);
+			}
+		},
+		secondary: null,
+		target: "normal",
+		type: "Psychic",
+		contestType: "Clever",
+	},
 	mindreader: {
 		num: 170,
 		accuracy: true,
@@ -12818,7 +13125,7 @@ export const Moves: {[moveid: string]: MoveData} = {
 		name: "Mirror Move",
 		pp: 20,
 		priority: 0,
-		flags: {failencore: 1, nosleeptalk: 1, noassist: 1, failcopycat: 1, failinstruct: 1, failmimic: 1},
+		flags: {copy: 1,failencore: 1, nosleeptalk: 1, noassist: 1, failcopycat: 1, failinstruct: 1, failmimic: 1},
 		onTryHit(target, pokemon) {
 			const move = target.lastMove;
 			if (!move?.flags['mirror'] || move.isZ || move.isMax) {
@@ -15859,6 +16166,32 @@ export const Moves: {[moveid: string]: MoveData} = {
 		zMove: {boost: {def: 1}},
 		contestType: "Clever",
 	},
+	reflectionwing: {
+		num: 383,
+		accuracy: true,
+		basePower: 0,
+		category: "Special",
+		name: "Reflection Wing",
+		pp: 20,
+		priority: 0,
+		flags: {copy: 1,failencore: 1, nosleeptalk: 1, noassist: 1, failcopycat: 1, failinstruct: 1, failmimic: 1},
+		onModifyMove(move) {
+			if (this.lastMove && this.lastMove.category) {
+				move.category = this.lastMove.category;
+				this.hint(move.category + " Reflection Wing");
+			}
+			if (this.lastMove && this.lastMove.basePower) {
+				move.basePower = this.lastMove.basePower;
+				this.hint(move.basePower + " Reflection Wing")
+			}
+		},
+
+		
+		secondary: null,
+		target: "normal",
+		type: "Water",
+		contestType: "Beautiful",
+	},
 	reflecttype: {
 		num: 513,
 		accuracy: true,
@@ -17764,6 +18097,61 @@ export const Moves: {[moveid: string]: MoveData} = {
 		target: "normal",
 		type: "Ghost",
 		contestType: "Cool",
+	},
+	sinisterfang: {
+		num: 242,
+		accuracy: 100,
+		basePower: 70,
+		category: "Physical",
+		name: "Sinister Fang",
+		pp: 15,
+		priority: 0,
+		flags: {bite: 1, contact: 1, protect: 1, mirror: 1},
+		onHit(target, source) {
+			if (source.positiveBoosts()){
+			let highestStat = "";
+			let highestValue = -1;
+	
+			// Compare the user's stats
+			if (source.getStat('spe') > highestValue) {
+				highestStat = "Speed";
+				highestValue = source.getStat('spe');
+			}
+			if (source.getStat('atk') > highestValue) {
+				highestStat = "Attack";
+				highestValue = source.getStat('atk');
+			}
+			if (source.getStat('spa') > highestValue) {
+				highestStat = "Special Attack";
+				highestValue = source.getStat('spa');
+			}
+			if (source.getStat('def') > highestValue) {
+				highestStat = "Defense";
+				highestValue = source.getStat('def');
+			}
+			if (source.getStat('spd') > highestValue) {
+				highestStat = "Special Defense";
+				highestValue = source.getStat('spd');
+			}
+			 // Change the weather based on the highest stat
+			 if (highestStat === "Speed") {
+				this.boost({spe: 1}, source)
+			} else if (highestStat === "Attack") {
+				this.boost({atk: 1}, source)
+			}else if (highestStat === "Defense") {
+				this.boost({def: 1}, source)
+			}else if (highestStat === "Special Attack") {
+				this.boost({spa: 1}, source)
+			} else if (highestStat === "Special Defense") {
+				this.boost({spd: 1}, source)
+			}
+		}
+		},
+	
+		secondary: {},
+		target: "normal",
+		type: "Dark",
+		contestType: "Tough",
 	},
 	sizzlyslide: {
 		num: 735,
@@ -20545,6 +20933,7 @@ export const Moves: {[moveid: string]: MoveData} = {
 		zMove: {effect: 'heal'},
 		contestType: "Cool",
 	},
+
 	terablast: {
 		num: 851,
 		accuracy: 100,
@@ -21797,6 +22186,43 @@ export const Moves: {[moveid: string]: MoveData} = {
 		type: "Electric",
 		contestType: "Cool",
 	},
+	volttickle: {
+		num: 210,
+		accuracy: 95,
+		basePower: 50,
+		basePowerCallback(pokemon, target, move) {
+			if (!pokemon.volatiles['volttickle'] || move.hit === 1) {
+				pokemon.addVolatile('volttickle');
+			}
+			const bp = this.clampIntRange(move.basePower * pokemon.volatiles['volttickle'].multiplier, 1, 320);
+			this.debug('BP: ' + bp);
+			return bp;
+		},
+		category: "Physical",
+		name: "Volt Tickle",
+		pp: 10,
+		priority: 0,
+		flags: {contact: 1, protect: 1, mirror: 1},
+		condition: {
+			duration: 2,
+			onStart() {
+				this.effectState.multiplier = 1;
+			},
+			onRestart() {
+				if (this.effectState.multiplier < 4) {
+					this.effectState.multiplier <<= 1;
+				}
+				this.effectState.duration = 2;
+			},
+		},
+		secondary: {
+			chance: 30,
+			status: 'par',
+		},
+		target: "normal",
+		type: "Electric",
+		contestType: "Cool",
+	},
 	wakeupslap: {
 		num: 358,
 		accuracy: 100,
@@ -22555,6 +22981,27 @@ export const Moves: {[moveid: string]: MoveData} = {
 		},
 		target: "normal",
 		type: "Psychic",
+		contestType: "Clever",
+	},
+	zenpunch: {
+		num: 3,
+		accuracy: 95,
+		basePower: 50,
+		category: "Physical",
+		isNonstandard: "Past",
+		name: "Zen Punch",
+		pp: 15,
+		priority: 0,
+		flags: {contact: 1, protect: 1, mirror: 1},
+		onTryHit(source, target, move) {
+			const types = ["Fighting", "Psychic"];
+			move.type = types[Math.floor(Math.random() * types.length)];
+			this.add('-message', `Type: ${move.type}`);
+		},
+		multihit: 2,
+		secondary: null,
+		target: "normal",
+		type: "Fighting",
 		contestType: "Clever",
 	},
 	zingzap: {

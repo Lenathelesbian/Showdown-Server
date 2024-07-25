@@ -3636,8 +3636,8 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 	mirrorwing: {
 		onBasePowerPriority: 19,
 		onBasePower(basePower, attacker, defender, move) {
-			if (move.name === 'Mirror Move', 'Me First') {
-				return this.chainModify(1.5)
+			if (move.flags['copy']) {
+				this.chainModify(1.5)
 			}
 		},
 		name: "Mirror Wing",
@@ -4632,6 +4632,9 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 				// hack to prevent accidentally suppressing King's Rock/Razor Fang
 				return secondaries.filter(effect => effect.volatileStatus === 'flinch');
 			}
+		},
+		onBasePower(relayVar, source, target, move) {
+			this.chainModify(0.4);
 		},
 		name: "Power Of Three",
 		rating: 4.5,
@@ -7170,7 +7173,7 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 		onBasePowerPriority: 19,
 		onBasePower(basePower, attacker, defender, move) {
 			if (move.flags['bullet']) {
-				return this.chainModify(1.5);
+				this.chainModify(1.5);
 			}
 		},
 		name: "Trigger Happy",
